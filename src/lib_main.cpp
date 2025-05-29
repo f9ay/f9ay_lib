@@ -42,6 +42,7 @@ static int f9ay_export(const char *filename, const char *data, int row, int col,
     } catch (...) {
         return -1;
     }
+    return 0;
 }
 
 extern "C" {
