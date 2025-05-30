@@ -20,6 +20,6 @@ if (WIN32)
 endif()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(f9ay_lib PRIVATE /utf-8)
+    target_compile_options(f9ay_lib PRIVATE /Qpar /utf-8 /arch:AVX2)
 endif ()
 
