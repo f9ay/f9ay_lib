@@ -45,37 +45,6 @@ static int f9ay_export(const char *filename, const char *data, int row, int col,
     return 0;
 }
 
-static int f9ay_png_export_internal(const char *filename, const char *data, int row, int col, int channels) {
-    try{
-        std::unique_ptr<std::byte[]> buffer;
-        size_t size;
-        if (channels == 3) {  // BGR
-            auto color_ptr = (f9ay::colors::BGR *)(void *)(data);
-            f9ay::Matrix<f9ay::colors::BGR> mtx(color_ptr, row, col);
-            auto rgb_mtx = mtx.trans_convert([](const auto &c) {
-                return f9ay::colors::color_cast<f9ay::colors::RGB>(c);
-            });
-            std::tie(buffer, size) = f9ay::PNG::exportToByte(rgb_mtx, FilterType::Paeth);
-        } else if (channels == 4) {  // BGRA
-            auto color_ptr = (f9ay::colors::BGRA *)(void *)(data);
-            f9ay::Matrix<f9ay::colors::BGRA> mtx(color_ptr, row, col);
-            auto rgba_mtx = mtx.trans_convert([](const auto &c) {
-                return f9ay::colors::color_cast<f9ay::colors::RGBA>(c);
-            });
-            std::tie(buffer, size) = f9ay::PNG::exportToByte(rgba_mtx, FilterType::Paeth);
-        }
-        std::filesystem::path path(filename);
-        std::ofstream out(path, std::ios::binary);
-        if(!out.is_open()) {
-            return -1;
-        }
-        out.write(reinterpret_cast<const char *>(buffer.get()), size);
-    } catch (...) {
-        return -1;
-    }
-    return 0;
-}
-
 extern "C" {
 
     char *f9ay_read(const char *filename, int *row, int *col, int *channels) {
@@ -128,7 +97,7 @@ extern "C" {
     }
 
     int f9ay_png_export(const char *filename, const char *data, int row, int col, int channels) {
-        return f9ay_png_export_internal(filename, data, row, col, channels);
+        return f9ay_export<f9ay::PNG>(filename, data, row, col, channels);
     }
 
     void f9ay_free(char *ptr) {
