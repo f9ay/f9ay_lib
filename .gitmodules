@@ -1,3 +1,4 @@
 [submodule "lib"]
 	path = lib
 	url = https://github.com/f9ay/f9ay_core
+	branch = main
