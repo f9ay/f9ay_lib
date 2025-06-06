@@ -5,13 +5,13 @@
 #include "filesystem"
 #include "importer.hpp"
 
-static std::variant<f9ay::Bmp, f9ay::Jpeg, f9ay::PNG> selectImporter(const std::byte *data) {
+static std::variant<f9ay::Bmp, f9ay::Jpeg<>, f9ay::PNG> selectImporter(const std::byte *data) {
     if (data[0] == std::byte{0x89} && data[1] == std::byte{0x50} && data[2] == std::byte{0x4E} &&
         data[3] == std::byte{0x47}) {
         return f9ay::PNG();
     }
     if (data[0] == std::byte{0xFFu} && data[1] == std::byte{0xD8u}) {
-        return f9ay::Jpeg();
+        return f9ay::Jpeg<>();
     }
     if (data[0] == std::byte{0x42u} && data[1] == std::byte{0x4Du}) {
         return f9ay::Bmp();
@@ -93,7 +93,7 @@ extern "C" {
     }
 
     int f9ay_jpeg_export(const char *filename, const char *data, int row, int col, int channels) {
-        return f9ay_export<f9ay::Jpeg>(filename, data, row, col, channels);
+        return f9ay_export<f9ay::Jpeg<>>(filename, data, row, col, channels);
     }
 
     int f9ay_png_export(const char *filename, const char *data, int row, int col, int channels) {

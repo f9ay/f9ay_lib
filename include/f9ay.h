@@ -1,10 +1,13 @@
 #pragma once
 
-
+#ifdef _WIN32
 #ifdef F9AY_LIB_EXPORTS
 #define F9AY_API __declspec(dllexport)
 #else
 #define F9AY_API __declspec(dllimport)
+#endif
+#else
+#define F9AY_API
 #endif
 
 #ifdef __cplusplus
